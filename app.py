@@ -1,16 +1,12 @@
 from fastapi import FastAPI
+from Model.db import db
 
-from model import model 
-
-
-
-app= FastAPI
-
-
+app = FastAPI
 
 @app.get("/")
 def find_pokemon_by_type(poke_type: str):
-    pokemon_names = find_pokemon_by_type(poke_type)
+    # pokemon_names = find_pokemon_by_type(poke_type)
+    pokemon_names = db.findByType(poke_type)
     return {"pokemon_names": pokemon_names}
 
 
