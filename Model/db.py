@@ -3,6 +3,9 @@ class Database:
         print("Initializing the DB")
         pass
 
+    def findById(self, id: int) -> dict:
+        return {"place": "holder"}
+    
     def findByType(self, type: str) -> list[str]:
         return []
     

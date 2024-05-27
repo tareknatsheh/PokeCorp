@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 @dataclass
 class Pokemon:
     id: int
@@ -10,7 +9,7 @@ class Pokemon:
     weight: float
 
 @dataclass
-class Owner:
+class Trainer:
     id: int
     name: str
     town: str
