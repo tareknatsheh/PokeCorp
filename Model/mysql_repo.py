@@ -11,6 +11,56 @@ class MySql_repo:
         self.db_password: str = str(config("SQL_DB_PASSWORD"))
         self.db_connection: Optional[Connection] = None
         self.cursor: Optional[Cursor] = None
+    
+    @handle_database_errors
+    def find_pokemon_by_type(self, type: str):
+        query = """
+            SELECT pk.id, pk.name, pk.height, pk.weight 
+            FROM (SELECT * FROM types WHERE type = %s) ty
+            LEFT JOIN pokemons pk ON ty.pokemon_id = pk.id;
+        """
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        self.cursor.execute(query, (type,))
+        result = self.cursor.fetchall()
+        result = [{"id": p[0], "name": p[1], "height": p[2], "weight": p[3]} for p in result]
+        return result
+    
+    @handle_database_errors
+    def find_pokemons_by_trainer_id(self, type: str):
+        query = """
+            SELECT p.id, p.name, p.height, p.weight
+            FROM (SELECT * FROM pokemon_trainers WHERE trainer_id = %s) pktr
+            LEFT JOIN pokemons p ON p.id = pktr.pokemon_id;
+        """
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        self.cursor.execute(query, (type,))
+        result = self.cursor.fetchall()
+        result = [{"id": p[0], "name": p[1], "height": p[2], "weight": p[3]} for p in result]
+
+        return result
+    
+    @handle_database_errors
+    def find_pokemons_by_type_and_trainer_id(self, type, trainer_id):
+        query = """
+            SELECT p.id, p.name, p.height, p.weight
+            FROM (SELECT * FROM pokemon_trainers WHERE trainer_id = %s) pktr
+            INNER JOIN pokemons p ON p.id = pktr.pokemon_id
+            INNER JOIN (SELECT * FROM types WHERE type = %s) ty ON p.id = ty.pokemon_id;
+        """
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        self.cursor.execute(query, (trainer_id, type))
+        result = self.cursor.fetchall()
+        result = [{"id": p[0], "name": p[1], "height": p[2], "weight": p[3]} for p in result]
+
+        return result
+
+
 
     @handle_database_errors
     def get_pokemon_by_id(self, id) -> Optional[Pokemon]:
@@ -29,7 +79,7 @@ class MySql_repo:
         self.cursor.execute(query, (id,))
         all_types = self.cursor.fetchall()
         all_types = [t[1] for t in all_types]
-        print(all_types)
+
         return Pokemon(id=result[0], name=result[1], height=result[2], weight=result[3], type=all_types)
 
     @handle_database_errors
@@ -59,23 +109,40 @@ class MySql_repo:
         return new_pok
     
     @handle_database_errors
-    def find_and_filter_type_trainer(self, type: Optional[str], trainer_name: Optional[str]) -> list[dict]:
-        sql_query = """
-            SELECT DISTINCT p.id, p.name, p.height, p.weight
-            FROM pokemons p
-            LEFT JOIN types t ON p.id = t.pokemon_id
-            LEFT JOIN pokemon_trainers pt ON p.id = pt.pokemon_id
-            LEFT JOIN trainers tr ON pt.trainer_id = tr.id
-            WHERE (t.type = %s OR %s IS NULL)
-            AND (tr.name = %s OR %s IS NULL);
-        """
-
+    def find_trainers_by_pokemon_id(self, trainer_id: int):
+        query = """
+                    SELECT tr.name
+                    FROM (SELECT * FROM pokemons WHERE id = %s) p
+                    LEFT JOIN pokemon_trainers pktr ON p.id = pktr.pokemon_id
+                    LEFT JOIN trainers tr ON pktr.trainer_id = tr.id
+                """
         if not self.cursor:
             raise Exception("cursor not initialized")
         
-        self.cursor.execute(sql_query, (type, type, trainer_name, trainer_name))
+        self.cursor.execute(query, (trainer_id,))
         result = self.cursor.fetchall()
-        result = [{"id": p[0], "name": p[1], "height": p[2], "weight": p[3]} for p in result]
+
+        if not result:
+            return None
+
+        result = [t[0] for t in result]
+
+        return result
+    
+    @handle_database_errors
+    def find_all_trainers(self):
+        query = """
+                    SELECT * FROM trainers
+                """
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        result = self.cursor.fetchall()
+        if not result:
+            return None
+        
+        result = [t[0] for t in result]
+
         return result
 
     
