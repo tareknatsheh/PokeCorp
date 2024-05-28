@@ -7,10 +7,7 @@ class Database:
         self.my_db = repo()
         pass
     
-    # done
-    def find_by_type_and_trainer(self, type: Optional[str], trainer_name: Optional[str]) -> list[dict]:
-        return self.my_db.find_and_filter_type_trainer(type, trainer_name)
-
+    # -------- Pokemon -----------
     # done
     def find_pokemon_by_id(self, id: int) -> Pokemon | None:
         try:
@@ -19,21 +16,16 @@ class Database:
             print(f"Error: find_by_id: {e}")
             raise
     
-    # done
-    def find_all_pokemons(self) -> list[dict]:
-        return self.my_db.find_and_filter_type_trainer(None, None)
-
-    # done
-    def find_pokemon_by_type(self, type: str) -> list[dict]:
-        return self.my_db.find_and_filter_type_trainer(type, None)
-    
     # TODO
-    def find_trainers(self, pokemon_name: str) -> list[str]:
-        return []
+    def find_pokemon_by_type(self, type: str) -> list[dict]:
+        return self.my_db.find_pokemon_by_type(type)
     
     # done
-    def find_pokemons_by_trainer(self, trainer_name) -> list[dict]:
-        return self.my_db.find_and_filter_type_trainer(None, trainer_name)
+    def find_pokemons_by_trainer_id(self, trainer_name) -> list[dict]:
+        return self.my_db.find_pokemons_by_trainer_id(trainer_name)
+    
+    def find_pokemons_by_type_and_trainer_id(self, type, trainer_name):
+        return self.my_db.find_pokemons_by_type_and_trainer_id(type, trainer_name)
     
     # done
     def add_new_pokemon(self, new_pok: Pokemon):
@@ -42,6 +34,14 @@ class Database:
         except Exception as e:
             print(f"Error: add_new_pokemon: {e}")
             raise
+    
+    # -------- Trainer -----------
+    def find_trainers_by_pokemon_id(self, pokemon_id: int):
+        return self.my_db.find_trainers_by_pokemon_id(pokemon_id)
+    
+    def find_all_trainers(self):
+        return self.my_db.find_all_trainers()
+
 
 
 db = Database()
