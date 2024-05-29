@@ -5,6 +5,8 @@ from Model.Entities import Pokemon
 
 router = APIRouter()
 
+# TODO improve returned result and make sure status code is clear
+
 @router.get("/")
 def get_pokemon(type: Optional[str] = None, trainer_id: Optional[str] = None):
     """Get all pokemons, or filter by parameters
