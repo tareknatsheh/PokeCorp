@@ -88,7 +88,7 @@ class MySql_repo(DB_Interface):
         return new_pok
     
     @handle_database_errors
-    def get_trainers_by_pokemon_id(self, pokemon_id: int) -> None | list[Trainer]:
+    def get_trainers_by_pokemon_id(self, pokemon_id: int) -> list[Trainer]:
         if not self.cursor:
             raise Exception("cursor not initialized")
         
@@ -96,8 +96,56 @@ class MySql_repo(DB_Interface):
         result = self.cursor.fetchall()
 
         if not result:
-            return None
+            return []
         return [Trainer(id=t[0], name=t[1], town=t[2]) for t in result]
+    
+    @handle_database_errors
+    def get_all_trainers(self) -> list[Trainer]:
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        self.cursor.execute(tr_queries.GET_ALL)
+        result = self.cursor.fetchall()
+
+        if not result:
+            return []
+        return [Trainer(id=t[0], name=t[1], town=t[2]) for t in result]
+    
+    @handle_database_errors
+    def get_trainer_by_id(self, trainer_id: int) -> Optional[Trainer]:
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        self.cursor.execute(tr_queries.GET_BY_ID, (trainer_id,))
+        result = self.cursor.fetchone()
+        if not result:
+            return None
+        return Trainer(id=result[0], name=result[1], town=result[2])
+    
+    @handle_database_errors
+    def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id) -> bool:
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        self.cursor.execute(tr_queries.GET_TRAINER_POKEMON, (trainer_id, pokemon_id))
+        result = self.cursor.fetchone()
+        if not result:
+            return False
+        return True
+    
+    @handle_database_errors
+    def add_new_pokemon_to_trainer(self, trainer_id: int, pokemon: Pokemon) -> Pokemon:
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        if not self.db_connection:
+            raise Exception("cursor not initialized")
+        
+        values = (trainer_id, pokemon.id)
+        self.cursor.execute(tr_queries.ADD_POKEMON, values)
+        self.db_connection.commit()
+
+        return pokemon
     
     # @handle_database_errors
     # def find_all_trainers(self):

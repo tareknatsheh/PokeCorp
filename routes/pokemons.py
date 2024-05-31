@@ -1,11 +1,11 @@
 from typing import Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from Model.db import db
 from Model.Entities import Pokemon
 
 router = APIRouter()
 
-@router.get("/")
+@router.get("/", status_code=status.HTTP_200_OK)
 def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     """Get all pokemons, or filter by parameters
     Params:
@@ -36,7 +36,7 @@ def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
 
     return result
 
-@router.get("/{id}")
+@router.get("/{id}", status_code=status.HTTP_200_OK)
 def get_pokemon_by_id(id: int):
     """Get pokemon by their unique id
 
@@ -50,7 +50,7 @@ def get_pokemon_by_id(id: int):
         raise HTTPException(status_code=404, detail=f"Pokemon with id {id} could not be found")
     return pokemon
 
-@router.post("/")
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def add_new_pokemon(new_pokemon: Pokemon) -> Pokemon:
     """
     Pyload:
