@@ -10,9 +10,7 @@ def handle_database_errors(func):
     def wrapper(self, *args, **kwargs):
         try:
             self._connect()
-
             result = func(self, *args, **kwargs)
-
             return result
 
         except Error as e:

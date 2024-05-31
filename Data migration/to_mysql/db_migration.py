@@ -72,10 +72,14 @@ def main():
 
     connection = db_init()
     json_data = read_json_file(json_file_path)
+
+    # You can uncomment all of the following function and run them all at once
+    # but I think it's better to uncomment and run one after another:
+    
     # migrate_pokemons_table(connection, json_data)
     # migrate_trainers_table(connection, json_data)
     # migrate_types_table(connection, json_data)
-    migrate_pokemon_trainers_table(connection, json_data)
+    # migrate_pokemon_trainers_table(connection, json_data)
 
     connection.close()
 

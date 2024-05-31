@@ -1,26 +1,14 @@
-from pydantic import BaseModel, field_validator
+from typing import Annotated
+from pydantic import BaseModel, PositiveFloat, PositiveInt, StringConstraints
 
 class Pokemon(BaseModel):
-    id: int
-    name: str
-    height: float
-    weight: float
+    id: PositiveInt
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=50)]
+    height: PositiveFloat
+    weight: PositiveFloat
     type: list[str]
 
-    @field_validator("id")
-    def validate_id(cls, value):
-        if value < 0:
-            raise ValueError("pokemon id must be a positive integer")
-        return value
-    
-    @field_validator("height")
-    def validate_height(cls, value):
-        if value < 0 :
-            raise ValueError("pokemon height must be a positive float")
-        return value
-    
-    @field_validator("weight")
-    def validate_weight(cls, value):
-        if value < 0 :
-            raise ValueError("pokemon weight must be a positive float")
-        return value
+class Trainer(BaseModel):
+    id: PositiveInt
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=50)]
+    town: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=50)]
