@@ -2,13 +2,14 @@ import pymysql
 from pymysql.connections import Connection
 from pymysql.cursors import Cursor
 from decouple import config
-from Model.Entities import Pokemon
+from Model.Entities import Pokemon, Trainer
 from typing import Any, Optional
-from Model.Pokemon_DB_Interface import Pokemon_DB_Interface
+from Model.DB_Interface import DB_Interface
 from Model.utils.db_error_handler import handle_database_errors
 import Model.sql_queries.pokemon_queries as pok_queries
+import Model.sql_queries.trainer_queries as tr_queries
 
-class MySql_repo(Pokemon_DB_Interface):
+class MySql_repo(DB_Interface):
     def __init__(self):
         self.db_password: str = str(config("SQL_DB_PASSWORD"))
         self.db_connection: Optional[Connection] = None
@@ -87,59 +88,50 @@ class MySql_repo(Pokemon_DB_Interface):
         return new_pok
     
     @handle_database_errors
-    def find_trainers_by_pokemon_id(self, trainer_id: int):
-        query = """
-                    SELECT tr.name
-                    FROM (SELECT * FROM pokemons WHERE id = %s) p
-                    LEFT JOIN pokemon_trainers pktr ON p.id = pktr.pokemon_id
-                    LEFT JOIN trainers tr ON pktr.trainer_id = tr.id
-                """
+    def get_trainers_by_pokemon_id(self, pokemon_id: int) -> None | list[Trainer]:
         if not self.cursor:
             raise Exception("cursor not initialized")
         
-        self.cursor.execute(query, (trainer_id,))
+        self.cursor.execute(tr_queries.GET_BY_POKEMON_ID, (pokemon_id,))
         result = self.cursor.fetchall()
 
         if not result:
             return None
-
-        result = [t[0] for t in result]
-
-        return result
+        return [Trainer(id=t[0], name=t[1], town=t[2]) for t in result]
     
-    @handle_database_errors
-    def find_all_trainers(self):
-        query = """
-                    SELECT * FROM trainers
-                """
-        if not self.cursor:
-            raise Exception("cursor not initialized")
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        if not result:
-            return None
+    # @handle_database_errors
+    # def find_all_trainers(self):
+    #     query = """
+    #                 SELECT * FROM trainers
+    #             """
+    #     if not self.cursor:
+    #         raise Exception("cursor not initialized")
+    #     self.cursor.execute(query)
+    #     result = self.cursor.fetchall()
+    #     if not result:
+    #         return None
         
-        result = [t[0] for t in result]
+    #     result = [t[0] for t in result]
 
-        return result
+    #     return result
     
-    @handle_database_errors
-    def find_trainer_by_id(self, trainer_id):
-        query = "SELECT id, name, town FROM trainers WHERE id = %s"
+    # @handle_database_errors
+    # def find_trainer_by_id(self, trainer_id):
+    #     query = "SELECT id, name, town FROM trainers WHERE id = %s"
 
-        if not self.cursor:
-            raise Exception("cursor not initialized")
+    #     if not self.cursor:
+    #         raise Exception("cursor not initialized")
         
-        self.cursor.execute(query, (trainer_id,))
-        result = self.cursor.fetchone()
-        if not result:
-            return None
+    #     self.cursor.execute(query, (trainer_id,))
+    #     result = self.cursor.fetchone()
+    #     if not result:
+    #         return None
 
-        return {
-            "id": result[0],
-            "name": result[1],
-            "town": result[2]
-        }
+    #     return {
+    #         "id": result[0],
+    #         "name": result[1],
+    #         "town": result[2]
+    #     }
 
     @handle_database_errors
     def remove_relation_between(self, trainer_id, pokemon_id) -> int:

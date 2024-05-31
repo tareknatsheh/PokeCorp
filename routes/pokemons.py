@@ -26,10 +26,10 @@ def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     else:
         if not trainer_id:
             # get by type
-            result = db.pokemon.get_pokemons_by_type(type)
+            result = db.pokemon.get_by_type(type)
         else:
             # get by type and trainer id
-            result = db.pokemon.get_pokemons_by_type_and_trainer_id(type, trainer_id)
+            result = db.pokemon.get_by_type_and_trainer_id(type, trainer_id)
 
     if not result:
         raise HTTPException(status_code=404, detail=f"Couldn't find any pokemon")
