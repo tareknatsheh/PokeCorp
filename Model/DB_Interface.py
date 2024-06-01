@@ -46,5 +46,10 @@ class DB_Interface(ABC):
         pass
 
     @abstractmethod
-    def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id) -> bool:
+    def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id: int) -> bool:
+        pass
+
+    #-------- Actions --------
+    @abstractmethod
+    def evolve_pokemon_of_trainer(self, pokemon_id: int, trainer_id: int) -> Pokemon:
         pass
