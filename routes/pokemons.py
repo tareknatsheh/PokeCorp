@@ -62,10 +62,3 @@ def add_new_pokemon(new_pokemon: Pokemon) -> Pokemon:
         id, name, height, weight, types (all of them)
     """
     return db.pokemon.add(new_pokemon)
-
-
-
-"""
-PUT /evolve/{pokemon_id}/{trainer_id}
-7. Evolve (pokemon x of trainer y)
-"""

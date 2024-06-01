@@ -53,3 +53,10 @@ class Trainer_Repo:
         if is_this_trainer_has_this_pokemon:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"The Trainer {trainer_id} already has {pokemon_id}")
         return self.db.add_new_pokemon_to_trainer(trainer_id, pokemon_to_add)
+    
+class Actions_Repo:
+    def __init__(self, db: DB_Interface):
+        self.db = db
+
+    def evolve_pokemon_of_trainer(self, pokemon_id: int, trainer_id: int):
+        pass

@@ -204,6 +204,10 @@ class MySql_repo(DB_Interface):
         self.cursor.execute(query, (trainer_id, pokemon_id))
         rows_affected = self.cursor.rowcount
         return rows_affected
+    
+    @handle_database_errors
+    def evolve_pokemon_of_trainer(self, pokemon_id: int, trainer_id: int) -> Pokemon:
+        raise
 
 
     def _connect(self):
