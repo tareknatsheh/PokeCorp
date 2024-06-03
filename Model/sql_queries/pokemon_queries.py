@@ -1,3 +1,5 @@
+GET_ALL = "SELECT id, name, height, weight FROM pokemons"
+
 GET_BY_TYPE = """
     SELECT pk.id, pk.name, pk.height, pk.weight 
     FROM (SELECT * FROM types WHERE type = %s) ty

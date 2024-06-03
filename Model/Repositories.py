@@ -7,6 +7,9 @@ from Model.DB_Interface import DB_Interface
 class Pokemon_Repo:
     def __init__(self, db: DB_Interface):
         self.db = db
+    
+    def get_all(self) -> list[Pokemon]:
+        return self.db.get_all_pokemons()
 
     def add(self, new_pokemon: Pokemon) -> Pokemon:
         self.db.add_new_pokemon(new_pokemon)

@@ -1,10 +1,11 @@
 from typing import Optional
 from fastapi import APIRouter, Path, HTTPException, status
-from Model.db import db
+from Model.db import create_database
 from routes.utils.routes_error_handler import handle_route_errors
 from Model.Entities import Pokemon, Trainer
 
 router = APIRouter()
+db = create_database()
 
 @router.get("/", status_code=status.HTTP_200_OK)
 @handle_route_errors
