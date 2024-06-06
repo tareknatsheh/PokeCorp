@@ -1,5 +1,5 @@
 from Model.DB_Interface import DB_Interface
-from Model.Repositories import Pokemon_Repo, Trainer_Repo
+from Model.Repositories import Actions_Repo, Pokemon_Repo, Trainer_Repo
 from Model.mysql_implementation import MySql_repo
 
 class Database:
@@ -7,6 +7,9 @@ class Database:
         self.my_db: DB_Interface = MySql_repo()
         self.pokemon = Pokemon_Repo(self.my_db)
         self.trainer = Trainer_Repo(self.my_db)
+        self.actions = Actions_Repo(self.my_db)
         pass
 
-db = Database()
+def create_database() -> Database:
+    print("Creating a database instance")
+    return Database()

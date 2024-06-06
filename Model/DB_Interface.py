@@ -5,6 +5,10 @@ from Model.Entities import Pokemon, Trainer
 class DB_Interface(ABC):
     #-------- Pokemon --------
     @abstractmethod
+    def get_all_pokemons(self) -> list[Pokemon]:
+        pass
+
+    @abstractmethod
     def add_new_pokemon(self, new_pokemon: Pokemon) -> Pokemon:
         pass
 
@@ -42,5 +46,10 @@ class DB_Interface(ABC):
         pass
 
     @abstractmethod
-    def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id) -> bool:
+    def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id: int) -> bool:
+        pass
+
+    #-------- Actions --------
+    @abstractmethod
+    def update_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> Pokemon:
         pass

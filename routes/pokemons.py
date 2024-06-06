@@ -1,11 +1,14 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, status
-from Model.db import db
+from routes.utils.routes_error_handler import handle_route_errors
+from Model.db import create_database
 from Model.Entities import Pokemon
 
 router = APIRouter()
+db = create_database()
 
 @router.get("/", status_code=status.HTTP_200_OK)
+@handle_route_errors
 def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     """Get all pokemons, or filter by parameters
     Params:
@@ -37,6 +40,7 @@ def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     return result
 
 @router.get("/{id}", status_code=status.HTTP_200_OK)
+@handle_route_errors
 def get_pokemon_by_id(id: int):
     """Get pokemon by their unique id
 
@@ -51,16 +55,10 @@ def get_pokemon_by_id(id: int):
     return pokemon
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
+@handle_route_errors
 def add_new_pokemon(new_pokemon: Pokemon) -> Pokemon:
     """
     Pyload:
         id, name, height, weight, types (all of them)
     """
     return db.pokemon.add(new_pokemon)
-
-
-
-"""
-PUT /evolve/{pokemon_id}/{trainer_id}
-7. Evolve (pokemon x of trainer y)
-"""
