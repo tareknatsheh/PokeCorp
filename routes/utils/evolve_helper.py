@@ -1,113 +1,87 @@
+from typing import Any
 from fastapi import HTTPException
 import requests
 
-class Evolve:
-    def __init__(self):
-        self.pokemon_id = None
-        self.evo_pokemon_id = None
-        self.evo_pokemon_name = None
-        self.pokemon_name = None
-        self.next = None
-        self.evo_chain_url = None
-        self.evo_chain_dict = None
-
-    def _get_name_and_evolution_chain_url_by_pokemon_id(self) -> None:
-        # get the pokemon details from pokeApi
-        try:
-            species_details = requests.get(f"https://pokeapi.co/api/v2/pokemon-species/{self.pokemon_id}")
-            species_details.raise_for_status()  # Raise an exception for HTTP errors
-        except requests.exceptions.HTTPError as http_err:
-            if species_details.status_code == 404:
-                print("Error 404: Resource not found.")
-                raise HTTPException(status_code=404, detail=f"Pokemon with id {self.pokemon_id} could not be found")
-            else:
-                print(f"HTTP error occurred: {http_err}")
-                raise HTTPException(status_code=500, detail=f"Something went wrong with pokeAPI")
-        except Exception as err:
-            print(f"An error occurred: {err}")
+def _get_name_and_evolution_chain_url_by_pokemon_id(pokemon_id) -> tuple:
+    # get the pokemon details from pokeApi
+    try:
+        species_details = requests.get(f"https://pokeapi.co/api/v2/pokemon-species/{pokemon_id}")
+        species_details.raise_for_status()  # Raise an exception for HTTP errors
+    except requests.exceptions.HTTPError as http_err:
+        if species_details.status_code == 404:
+            print("Error 404: Resource not found.")
+            raise HTTPException(status_code=404, detail=f"Pokemon with id {pokemon_id} could not be found")
         else:
-            species_details = species_details.json()
-            if not "evolution_chain" in species_details:
-                raise ValueError("The species details do not have evolution chain object")
-            
-            if not "url" in species_details["evolution_chain"]:
-                raise ValueError("The species details have evolution chain but there is no 'url' KVP inside it!")
-            
-            self.evo_chain_url = species_details["evolution_chain"]["url"]
-
-            if not "name" in species_details:
-                raise ValueError("The species details do not have name KVP!")
-            self.pokemon_name = species_details["name"]
-            print(f"Our guy is {self.pokemon_name}")
-
-    def _get_evolution_chain_object(self):
-        if not self.evo_chain_url:
-            raise ValueError("You can't call _get_evolution_chain_object without having the evo chain url")
-        evo_chain = requests.get(self.evo_chain_url).json()
-        if not "chain" in evo_chain:
-            raise ValueError("There is no 'chain' KVP in the evo chain!")
-        self.evo_chain_dict = evo_chain["chain"]
-
-    def _check_names_in_chain_recursive(self, pokemon_chain_obj):
-        if not "species" in pokemon_chain_obj:
-            raise ValueError("The evolution chain object is missing the 'species' KVP")
-        if not "name" in pokemon_chain_obj["species"]:
-            raise ValueError("The 'species' KVP inside the evolution chain object is missing the 'name' KVP")
+            print(f"HTTP error occurred: {http_err}")
+            raise HTTPException(status_code=500, detail=f"Something went wrong with pokeAPI")
+    except Exception as err:
+        print(f"An error occurred: {err}")
+    else:
+        species_details = species_details.json()
+        if not "evolution_chain" in species_details:
+            raise ValueError("The species details do not have evolution chain object")
         
-        print(f"checking: {pokemon_chain_obj["species"]["name"]}")
-
-        # check the next evolution in line:
-        if not "evolves_to" in pokemon_chain_obj:
-            raise ValueError("The evolution chain object is missing the 'evolves_to' KVP")
+        if not "url" in species_details["evolution_chain"]:
+            raise ValueError("The species details have evolution chain but there is no 'url' KVP inside it!")
         
-        if pokemon_chain_obj["evolves_to"]:
-            if not pokemon_chain_obj["species"]["name"] == self.pokemon_name:
-                for chain_obj in pokemon_chain_obj["evolves_to"]:
-                    return self._check_names_in_chain_recursive(chain_obj)
-            else:
-                print(f"Found him: {pokemon_chain_obj["species"]["name"]}, let's get the next evo")
-                next_evo_name = pokemon_chain_obj["evolves_to"][0]["species"]["name"]
-                self.evo_pokemon_name = next_evo_name
-                print(f"It will be {next_evo_name}")
-                next_evo_id = pokemon_chain_obj["evolves_to"][0]["species"]["url"].rstrip('/').split('/')[-1]
-                self.evo_pokemon_id = next_evo_id
+        evo_chain_url = species_details["evolution_chain"]["url"]
 
-
+        if not "name" in species_details:
+            raise ValueError("The species details do not have name KVP!")
+        pokemon_name = species_details["name"]
+        return pokemon_name, evo_chain_url
     
-    def _find_next_evolution_name_and_id(self):
-        if not self.evo_chain_dict:
-            raise ValueError("No evolution chain object found!")
-        if not self.pokemon_name:
-            raise ValueError("Can't evolve the pokemon without having its name!")
-        
-        self._check_names_in_chain_recursive(self.evo_chain_dict)
+    return None, None
 
+def _get_evolution_chain_object(evo_chain_url: str) -> dict:
+    if not evo_chain_url:
+        raise ValueError("You can't call _get_evolution_chain_object without having the evo chain url")
+    evo_chain = requests.get(evo_chain_url).json()
+    if not "chain" in evo_chain:
+        raise ValueError("There is no 'chain' KVP in the evo chain!")
+    return evo_chain["chain"]
 
-    def evolve(self, pokemon_id: int):
-        self.pokemon_id = pokemon_id
-        self._get_name_and_evolution_chain_url_by_pokemon_id()
-        self._get_evolution_chain_object()
-
-        result = self._find_next_evolution_name_and_id()
-
-        if not result:
-            return (self.pokemon_name, )
-        return (self.pokemon_name, result[0], result[1])
+def _find_next_evolution_name_and_id(pokemon_chain_obj: dict, pokemon_name) -> tuple:
+    if not pokemon_name:
+        raise ValueError("Can't evolve the pokemon without having its name!")
+    if not pokemon_chain_obj:
+        raise ValueError("No evolution chain object found!")
+    if not "species" in pokemon_chain_obj:
+        raise ValueError("The evolution chain object is missing the 'species' KVP")
+    if not "name" in pokemon_chain_obj["species"]:
+        raise ValueError("The 'species' KVP inside the evolution chain object is missing the 'name' KVP")
     
-    def get_evolve_name(self):
-        return self.evo_pokemon_name
+    print(f"checking: {pokemon_chain_obj["species"]["name"]}")
+
+    # check the next evolution in line:
+    if not "evolves_to" in pokemon_chain_obj:
+        raise ValueError("The evolution chain object is missing the 'evolves_to' KVP")
     
-    def get_evolve_id(self):
-        return self.evo_pokemon_id
+    if pokemon_chain_obj["evolves_to"]:
+        if not pokemon_chain_obj["species"]["name"] == pokemon_name:
+            for chain_obj in pokemon_chain_obj["evolves_to"]:
+                return _find_next_evolution_name_and_id(chain_obj, pokemon_name)
+        else:
+            print(f"Found him: {pokemon_chain_obj["species"]["name"]}, let's get the next evo")
+            next_evo_name = pokemon_chain_obj["evolves_to"][0]["species"]["name"]
+            evo_pokemon_name = next_evo_name
+            print(f"It will be {next_evo_name}")
+            next_evo_id = pokemon_chain_obj["evolves_to"][0]["species"]["url"].rstrip('/').split('/')[-1]
+            evo_pokemon_id = next_evo_id
+
+            return evo_pokemon_name, evo_pokemon_id
+    
+    return (None, None)
 
 
+def evolve(pokemon_id: int):
+    pok_name, chain_url = _get_name_and_evolution_chain_url_by_pokemon_id(pokemon_id)
+    evo_dict = _get_evolution_chain_object(chain_url)
+    result = _find_next_evolution_name_and_id(evo_dict, pok_name)
+    return result
 
 
 if __name__ == "__main__":
     print("executing")
-    evo = Evolve()
-    evo.evolve(17)
-
-    print(evo.evo_pokemon_id)
-    print(evo.evo_pokemon_name)
+    print(evolve(11))
 
