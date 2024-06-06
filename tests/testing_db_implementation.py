@@ -54,3 +54,6 @@ class Testing_repo(DB_Interface):
     
     def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id) -> bool:
         return False
+    
+    def evolve_pokemon_of_trainer(self, pokemon_id: int, trainer_id: int) -> Pokemon:
+        return Pokemon(id=0, name="test", height=0, weight=0, type=[])

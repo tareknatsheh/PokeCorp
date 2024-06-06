@@ -1,6 +1,6 @@
 from Model.DB_Interface import DB_Interface
 from Model.Repositories import Pokemon_Repo, Trainer_Repo
-from tests.testing_repo import Testing_repo
+from tests.testing_db_implementation import Testing_repo
 
 class Database:
     def __init__(self):
