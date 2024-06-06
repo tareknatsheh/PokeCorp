@@ -206,8 +206,16 @@ class MySql_repo(DB_Interface):
         return rows_affected
     
     @handle_database_errors
-    def evolve_pokemon_of_trainer(self, pokemon_id: int, trainer_id: int) -> Pokemon:
-        raise
+    def update_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> None:
+        if not self.cursor:
+            raise Exception("cursor not initialized")
+        
+        if not self.db_connection:
+            raise Exception("cursor not initialized")
+        
+        values = (new_pokemon_id, trainer_id, old_pokemon_id)
+        self.cursor.execute(tr_queries.EVOLVE_POKEMON, values)
+        self.db_connection.commit()
 
 
     def _connect(self):

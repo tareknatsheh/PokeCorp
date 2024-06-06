@@ -21,3 +21,8 @@ GET_TRAINER_POKEMON = """
 SELECT pokemon_id, trainer_id FROM pokemon.pokemon_trainers
 WHERE trainer_id = %s AND pokemon_id = %s
 """
+
+EVOLVE_POKEMON = """
+UPDATE pokemon.pokemon_trainers SET pokemon_id = %s
+WHERE trainer_id = %s AND pokemon_id = %s;
+"""
