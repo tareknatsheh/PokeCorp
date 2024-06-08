@@ -1,5 +1,4 @@
 from typing import Optional
-
 from fastapi import HTTPException, status
 from Model.Entities import Pokemon, Trainer
 from Model.DB_Interface import DB_Interface
@@ -8,9 +7,6 @@ class Pokemon_Repo:
     def __init__(self, db: DB_Interface):
         self.db = db
     
-    def get_all(self) -> list[Pokemon]:
-        return self.db.get_all_pokemons()
-
     def add(self, new_pokemon: Pokemon) -> Pokemon:
         self.db.add_new_pokemon(new_pokemon)
         return new_pokemon
@@ -41,7 +37,7 @@ class Trainer_Repo:
     def is_have_pokemon(self, trainer_id: int, pokemon_id: int) -> bool:
         return self.db.is_trainer_has_pokemon(trainer_id, pokemon_id)
     
-    def add_new_pokemon(self, trainer_id: int, pokemon_id: int) -> Pokemon:
+    def add_new_pokemon(self, trainer_id: int, pokemon_id: int) -> Optional[Pokemon]:
         # 1. check if pokemon exist in our list, If not, return http exception
         pokemon_to_add = self.db.get_pokemon_by_id(pokemon_id)
         if not pokemon_to_add:
@@ -55,11 +51,13 @@ class Trainer_Repo:
         # 4. if not, add it
         if is_this_trainer_has_this_pokemon:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"The Trainer {trainer_id} already has {pokemon_id}")
-        return self.db.add_new_pokemon_to_trainer(trainer_id, pokemon_to_add)
+        result = self.db.add_new_pokemon_to_trainer(trainer_id, pokemon_to_add)
+        if not result:
+            raise HTTPException(status_code=status.HTTP_304_NOT_MODIFIED, detail=f"Adding pokemon with id {pokemon_id}, to trainer with id {trainer_id} has failed. Check the logs")
     
 class Actions_Repo:
     def __init__(self, db: DB_Interface):
         self.db = db
 
-    def update_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> None:
-        self.db.update_pokemon_of_trainer(trainer_id, old_pokemon_id, new_pokemon_id)
+    def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> None:
+        self.db.evolve_pokemon_of_trainer(trainer_id, old_pokemon_id, new_pokemon_id)
