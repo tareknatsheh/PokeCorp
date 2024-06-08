@@ -35,12 +35,12 @@ def test_cant_create_wrong_pokemon_instance():
 def test_adding_new_pokemon(db):
     new_pok = Pokemon(id=2, name="racho", height=150, weight=20, type=["fire"])
     db.pokemon.add(new_pok)
-    assert new_pok in db.pokemon.get_all()
+    assert new_pok in db.my_db.pokemons_db
 
 def test_getting_all_with_empty_db(db):
-    assert db.pokemon.get_all() == []
+    assert db.my_db.pokemons_db == []
 
 def test_getting_all_with_one_pokemon(db):
     new_pok = Pokemon(id=2, name="racho", height=150, weight=20, type=["fire"])
     db.pokemon.add(new_pok)
-    assert len(db.pokemon.get_all()) == 1
+    assert len(db.my_db.pokemons_db) == 1

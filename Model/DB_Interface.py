@@ -3,10 +3,17 @@ from typing import Optional
 from Model.Entities import Pokemon, Trainer
 
 class DB_Interface(ABC):
-    #-------- Pokemon --------
+    #------- optional ------
     @abstractmethod
-    def get_all_pokemons(self) -> list[Pokemon]:
+    def _before(self):
         pass
+    @abstractmethod
+    def _after(self):
+        pass
+    #-------- Pokemon --------
+    # @abstractmethod
+    # def get_all_pokemons(self) -> list[Pokemon]:
+    #     pass
 
     @abstractmethod
     def add_new_pokemon(self, new_pokemon: Pokemon) -> Pokemon:
@@ -38,7 +45,7 @@ class DB_Interface(ABC):
         pass
     
     @abstractmethod
-    def add_new_pokemon_to_trainer(self, trainer_id: int, new_pokemon: Pokemon) -> Pokemon:
+    def add_new_pokemon_to_trainer(self, trainer_id: int, new_pokemon: Pokemon) -> Optional[Pokemon]:
         pass
 
     @abstractmethod
@@ -51,5 +58,5 @@ class DB_Interface(ABC):
 
     #-------- Actions --------
     @abstractmethod
-    def update_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> Pokemon:
+    def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> Pokemon:
         pass

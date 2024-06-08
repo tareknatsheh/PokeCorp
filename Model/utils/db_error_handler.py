@@ -9,7 +9,7 @@ def handle_database_errors(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         try:
-            self._connect()
+            self._before()
             result = func(self, *args, **kwargs)
             return result
 
@@ -24,6 +24,6 @@ def handle_database_errors(func):
             raise
 
         finally:
-            self._close()
+            self._after()
 
     return wrapper
