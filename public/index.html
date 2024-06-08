@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to PokeCorp!</title>
+    <style>
+        body, html {
+            height: 100%; /* Full height */
+            margin: 0; /* No margins */
+            padding: 0; /* No padding */
+            display: flex; /* Enables flexbox */
+            align-items: flex-start; /* Align items at the top */
+            justify-content: center; /* Center align horizontally */
+            font-family: Arial, sans-serif; /* Sets a clean, modern font */
+        }
+        .background {
+            position: absolute; /* Position it to cover the entire page */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/public/pokecorp-banner.jpg') no-repeat center center;
+            background-size: cover; /* Cover the entire window */
+            z-index: -1; /* Ensure it's behind other content */
+        }
+        .button-link {
+            margin-top: 50px; /* Spacing from top */
+            padding: 10px 20px;
+            font-size: 1.2em;
+            text-decoration: none; /* No underline */
+            color: #007BFF; /* Blue color for the link */
+            border: 2px solid #007BFF; /* Adds a border around the button */
+            border-radius: 5px; /* Rounded corners */
+            background-color: transparent; /* Transparent background */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+        }
+        .button-link:hover {
+            background-color: #007BFF; /* Blue background on hover */
+            color: #fff; /* White text on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div> <!-- Background image -->
+    <a href="/docs" class="button-link">Check the API documentation</a>
+</body>
+</html>
