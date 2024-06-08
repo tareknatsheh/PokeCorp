@@ -26,12 +26,13 @@ def get_pokemon(pokemon_id: int, trainer_id: int):
     
     next_pok_name, next_pok_id = evolve(pokemon_id)
     print(f"Next pok: {next_pok_name}, id: {next_pok_id}")
+    print(f"type of the id is: {type(next_pok_id)}")
 
     if not next_pok_id or not next_pok_name:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Pokemon with id {pokemon_id} can not evolve further.")
     
     # update the database
-    db.actions.update_pokemon_of_trainer(trainer_id, pokemon_id, next_pok_id)
+    db.actions.evolve_pokemon_of_trainer(trainer_id, pokemon_id, next_pok_id)
 
     return {
         "name": next_pok_name,

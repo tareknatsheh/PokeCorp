@@ -11,7 +11,7 @@ def add_all(collection: Collection, pokemons: list[dict]):
 
 def generate_ids_for_trainers(data: list):
     all_trainers = {}
-    id_counter = 0
+    id_counter = 1
     for pokemon in data:
         pokemon_trainers: list[dict] = pokemon["ownedBy"]
         for trainer in pokemon_trainers:
@@ -20,6 +20,7 @@ def generate_ids_for_trainers(data: list):
                 id_counter += 1
     
     return all_trainers
+
 
 def update_db_trainers_ids(collection: Collection, trainers_ids: dict[str, int]):
     pokemons = collection.find({})
@@ -40,7 +41,6 @@ def update_db_trainers_ids(collection: Collection, trainers_ids: dict[str, int])
 
     print("Update complete.")
 
-
 def read_json_file(file_path: str) -> list[dict]:
     with open(file_path) as f:
         data = json.load(f)
@@ -50,13 +50,13 @@ def read_json_file(file_path: str) -> list[dict]:
 
 
 def main():
-    json_file_path = "D:/backend-bootcamp/Final project/PokeCorp/Data migration/data seed/pokemons_data.json"
 
-    collection = db_init()
+    json_file_path = "D:/backend-bootcamp/Final project/PokeCorp/Data migration/data seed/pokemons_data.json"
     json_data = read_json_file(json_file_path)
     trainers_ids: dict = generate_ids_for_trainers(json_data)
 
-    # add_all(collection, json_data)
+    collection = db_init()
+    add_all(collection, json_data)
     update_db_trainers_ids(collection, trainers_ids)
 
 

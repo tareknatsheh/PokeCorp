@@ -8,9 +8,13 @@ class Testing_repo(DB_Interface):
         print("Initializing the testing repo")
         self.pokemons_db = []
         self.trainers_db = []
+
+    def _before(self):
+        pass
+        
     
-    def get_all_pokemons(self) -> list[Pokemon]:
-        return self.pokemons_db
+    def _after(self):
+        pass
     
     def add_new_pokemon(self, new_pokemon: Pokemon) -> Pokemon:
         pokemon_dict = new_pokemon.model_dump()

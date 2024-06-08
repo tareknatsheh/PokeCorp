@@ -45,7 +45,7 @@ class DB_Interface(ABC):
         pass
     
     @abstractmethod
-    def add_new_pokemon_to_trainer(self, trainer_id: int, new_pokemon: Pokemon) -> Pokemon:
+    def add_new_pokemon_to_trainer(self, trainer_id: int, new_pokemon: Pokemon) -> Optional[Pokemon]:
         pass
 
     @abstractmethod
@@ -58,5 +58,5 @@ class DB_Interface(ABC):
 
     #-------- Actions --------
     @abstractmethod
-    def update_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> Pokemon:
+    def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> Pokemon:
         pass

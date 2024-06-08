@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from fastapi import HTTPException
 import requests
 
@@ -41,7 +41,7 @@ def _get_evolution_chain_object(evo_chain_url: str) -> dict:
         raise ValueError("There is no 'chain' KVP in the evo chain!")
     return evo_chain["chain"]
 
-def _find_next_evolution_name_and_id(pokemon_chain_obj: dict, pokemon_name) -> tuple:
+def _find_next_evolution_name_and_id(pokemon_chain_obj: dict, pokemon_name) -> tuple[Optional[str], Optional[int]]:
     if not pokemon_name:
         raise ValueError("Can't evolve the pokemon without having its name!")
     if not pokemon_chain_obj:
@@ -67,7 +67,7 @@ def _find_next_evolution_name_and_id(pokemon_chain_obj: dict, pokemon_name) -> t
             evo_pokemon_name = next_evo_name
             print(f"It will be {next_evo_name}")
             next_evo_id = pokemon_chain_obj["evolves_to"][0]["species"]["url"].rstrip('/').split('/')[-1]
-            evo_pokemon_id = next_evo_id
+            evo_pokemon_id = int(next_evo_id)
 
             return evo_pokemon_name, evo_pokemon_id
     

@@ -37,6 +37,7 @@ def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     if not result:
         raise HTTPException(status_code=404, detail=f"Couldn't find any pokemon")
 
+    print(result)
     return result
 
 @router.get("/{id}", status_code=status.HTTP_200_OK)

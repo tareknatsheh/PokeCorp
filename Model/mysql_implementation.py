@@ -143,7 +143,7 @@ class MySql_repo(DB_Interface):
         return True
     
     @handle_database_errors
-    def add_new_pokemon_to_trainer(self, trainer_id: int, pokemon: Pokemon) -> Pokemon:
+    def add_new_pokemon_to_trainer(self, trainer_id: int, pokemon: Pokemon) -> Optional[Pokemon]:
         if not self.cursor:
             raise Exception("cursor not initialized")
         
@@ -205,7 +205,7 @@ class MySql_repo(DB_Interface):
         return rows_affected
     
     @handle_database_errors
-    def update_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> None:
+    def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> None:
         if not self.cursor:
             raise Exception("cursor not initialized")
         
