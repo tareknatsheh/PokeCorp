@@ -15,15 +15,15 @@ class MySql_repo(DB_Interface):
         self.db_connection: Optional[Connection] = None
         self.cursor: Optional[Cursor] = None
 
-    @handle_database_errors
-    def get_all_pokemons(self) -> list[dict]:
-        if not self.cursor:
-            raise Exception("cursor not initialized")
+    # @handle_database_errors
+    # def get_all_pokemons(self) -> list[dict]:
+    #     if not self.cursor:
+    #         raise Exception("cursor not initialized")
         
-        self.cursor.execute(pok_queries.GET_ALL)
-        result = self.cursor.fetchall()
-        result = [{"id": p[0], "name": p[1], "height": p[2], "weight": p[3]} for p in result]
-        return result
+    #     self.cursor.execute(pok_queries.GET_ALL)
+    #     result = self.cursor.fetchall()
+    #     result = [{"id": p[0], "name": p[1], "height": p[2], "weight": p[3]} for p in result]
+    #     return result
     
     @handle_database_errors
     def get_pokemons_by_type(self, type: str) -> list[dict]:
@@ -36,7 +36,7 @@ class MySql_repo(DB_Interface):
         return result
     
     @handle_database_errors
-    def get_pokemons_by_trainer_id(self, trainer_id: str) -> list[dict]:
+    def get_pokemons_by_trainer_id(self, trainer_id: int) -> list[dict]:
         if not self.cursor:
             raise Exception("cursor not initialized")
         
@@ -57,7 +57,6 @@ class MySql_repo(DB_Interface):
 
         return result
 
-    # done
     @handle_database_errors
     def get_pokemon_by_id(self, id) -> Optional[Pokemon]:
         if not self.cursor:
@@ -218,7 +217,7 @@ class MySql_repo(DB_Interface):
         self.db_connection.commit()
 
 
-    def _connect(self):
+    def _before(self):
         print("connecting to db ......")
         self.db_connection = pymysql.connect(
             host="localhost",
@@ -228,7 +227,7 @@ class MySql_repo(DB_Interface):
         )
         self.cursor = self.db_connection.cursor()
     
-    def _close(self):
+    def _after(self):
         if self.cursor:
             self.cursor.close()
             print("db connection closed.")

@@ -3,10 +3,17 @@ from typing import Optional
 from Model.Entities import Pokemon, Trainer
 
 class DB_Interface(ABC):
-    #-------- Pokemon --------
+    #------- optional ------
     @abstractmethod
-    def get_all_pokemons(self) -> list[Pokemon]:
+    def _before(self):
         pass
+    @abstractmethod
+    def _after(self):
+        pass
+    #-------- Pokemon --------
+    # @abstractmethod
+    # def get_all_pokemons(self) -> list[Pokemon]:
+    #     pass
 
     @abstractmethod
     def add_new_pokemon(self, new_pokemon: Pokemon) -> Pokemon:
