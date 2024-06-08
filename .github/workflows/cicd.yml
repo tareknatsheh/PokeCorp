@@ -1,12 +1,10 @@
 name: Test FastAPI server
 
 on:
-  push:
-    branches:
-      - dev
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   pytest:
