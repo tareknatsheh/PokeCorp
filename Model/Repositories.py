@@ -24,7 +24,7 @@ class Trainer_Repo:
     def get_by_pokemon_id(self, pokemon_id: int) -> list[Trainer]:
         return self.db.get_trainers_by_pokemon_id(pokemon_id)
     
-    def delete_a_pokemon(self, trainer_id: int, pokemon_id: int) -> Optional[int]:
+    def delete_a_pokemon(self, trainer_id: int, pokemon_id: int) -> dict:
         return self.db.delete_pokemon_of_trainer(trainer_id, pokemon_id)
     
     def add_new_pokemon(self, trainer_id: int, pokemon_id: int) -> dict:

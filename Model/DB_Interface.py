@@ -33,7 +33,7 @@ class DB_Interface(ABC):
         pass
 
     @abstractmethod
-    def delete_pokemon_of_trainer(self, trainer_id: int, pokemon_id: int) -> int:
+    def delete_pokemon_of_trainer(self, trainer_id: int, pokemon_id: int) -> dict:
         pass
     
     @abstractmethod
