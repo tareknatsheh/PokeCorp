@@ -1,7 +1,9 @@
-from typing import Optional
-from fastapi import HTTPException, status
-from Model.Entities import Pokemon, Trainer
+from fastapi import UploadFile
+import requests
+from Model.Entities import Trainer
 from Model.DB_Interface import DB_Interface
+from decouple import config
+from Model.images_utils import update_image_of_pokemon_by_id, get_pok_img_by_id
 
 class Pokemon_Repo:
     def __init__(self, db: DB_Interface):
@@ -15,6 +17,15 @@ class Pokemon_Repo:
     
     def get_by_type(self, type: str) -> list[dict]:
         return self.db.get_pokemons_by_type(type)
+    
+    async def update_image(self, pokemon_id: int ,file: UploadFile):
+        url = str(config("IMAGES_MICROSERVICE_URI"))
+        return update_image_of_pokemon_by_id(file, url, pokemon_id)
+
+    
+    def get_pokemon_image_by_id(self, pokemon_id: int) -> requests.Response:
+        url = str(config("IMAGES_MICROSERVICE_URI"))
+        return get_pok_img_by_id(url, pokemon_id)
     
 
 class Trainer_Repo:
