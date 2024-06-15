@@ -9,5 +9,6 @@ def handle_route_errors(func):
         except HTTPException as http_error:
             raise http_error
         except Exception as e:
+            print(e)
             raise HTTPException(status_code=500, detail=f"an unexpected error occurred in {func.__name__}: {e}")
     return wrapper

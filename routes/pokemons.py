@@ -1,8 +1,11 @@
 from typing import Optional
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, File, HTTPException, Response, UploadFile, status
 from routes.utils.routes_error_handler import handle_route_errors
 from Model.db import create_database
 from Model.Entities import Pokemon
+import requests
+from decouple import config
+import base64
 
 router = APIRouter()
 db = create_database()
@@ -21,45 +24,58 @@ def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     result = None
     if not type:
         if not trainer_id:
-            # get all pokemons
             raise HTTPException(status_code=400, detail=f"There are too many pokemons, please specify a type and/or a trainer")
         else:
-            # get by trainer
             result = db.pokemon.get_by_trainer_id(trainer_id)
     else:
-        if not trainer_id:
-            # get by type
-            result = db.pokemon.get_by_type(type)
-        else:
-            # get by type and trainer id
-            result = db.pokemon.get_by_type_and_trainer_id(type, trainer_id)
+        result = db.pokemon.get_by_type(type)
 
     if not result:
         raise HTTPException(status_code=404, detail=f"Couldn't find any pokemon")
 
-    print(result)
     return result
-
-@router.get("/{id}", status_code=status.HTTP_200_OK)
-@handle_route_errors
-def get_pokemon_by_id(id: int):
-    """Get pokemon by their unique id
-
-    Returns:
-        json: pokemon details
-    """
-    # pokemon = db.find_pokemon_by_id(id)
-    pokemon = db.pokemon.get_by_id(id)
-
-    if not pokemon:
-        raise HTTPException(status_code=404, detail=f"Pokemon with id {id} could not be found")
-    return pokemon
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 @handle_route_errors
-def add_new_pokemon(new_pokemon: Pokemon) -> Pokemon:
+def add_new_pokemon(pokemon_id: int):
+    """Add a pokemon by their id
+
+    Args:
+        pokemon_id (int): The unique id defined in https://pokeapi.co/
+
+    Returns:
+        response: status of the addition
     """
-    Pyload:
-        id, name, height, weight, types (all of them)
-    """
-    return db.pokemon.add(new_pokemon)
+    return db.pokemon.add(pokemon_id)
+
+
+@router.post("/images")
+async def upload_image(pokemon_id: int, file: UploadFile = File(...)):
+    try:
+        if file.content_type not in ["image/jpeg", "image/png", "image/gif"]:
+            raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, and GIF are allowed.")
+        
+        image_data = await file.read()
+        encoded_string = base64.b64encode(image_data)
+        # send data to mongodb-imgs-microservice
+        url = str(config("IMAGES_MICROSERVICE_URI"))
+        print(f"passing data to {url}")
+
+        payload ={"pokemon_id": pokemon_id, "filedata": encoded_string, "content_type": file.content_type}
+        response = requests.post(url, data=payload)
+
+        return {
+            "filename": file.filename,
+            "status": response.status_code,
+            "details": str(response.content)
+            }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/images/{pokemon_id}")
+def get_pokemon_image_by_id(pokemon_id: int):
+    url = str(config("IMAGES_MICROSERVICE_URI"))
+    response = requests.get(f"{url}/{pokemon_id}")
+
+    return Response(response.content, media_type="image/jpeg")
