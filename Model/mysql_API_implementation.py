@@ -72,6 +72,16 @@ class MySql_API_repo(DB_Interface):
         print(res)
         return new_pokemon_obj
     
+
+    ## ---------------- Trainer enpoint functions --------------
+    def get_all_trainers(self) -> list[Trainer]:
+        res = req.get(f"{self.trainers_enpoint}")
+        try:
+            res.raise_for_status()
+        except req.exceptions.HTTPError as http_err:
+            raise HTTPException(status_code=res.status_code, detail=res.json()["detail"]) from http_err
+        return res.json()
+
     def get_trainers_by_pokemon_id(self, pokemon_id: int) -> list[Trainer]:
         res = req.get(f"{self.trainers_enpoint}", params={"pokemon_id": pokemon_id})
         try:

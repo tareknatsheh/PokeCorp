@@ -1,5 +1,4 @@
 from functools import wraps
-from pymysql import Error
 
 # this dicorator will handle:
 # a. error handling
@@ -12,11 +11,6 @@ def handle_database_errors(func):
             self._before()
             result = func(self, *args, **kwargs)
             return result
-
-        except Error as e:
-            # TODO log into a file instead of printing
-            print(f"{Error.__name__} error occurred in {func.__name__}: {e}")
-            raise
 
         except Exception as e:
             # TODO log into a file instead of printing

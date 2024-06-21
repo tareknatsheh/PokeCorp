@@ -31,6 +31,9 @@ class Pokemon_Repo:
 class Trainer_Repo:
     def __init__(self, db: DB_Interface):
         self.db = db
+
+    def get_all(self) -> list[Trainer]:
+        return self.db.get_all_trainers()
     
     def get_by_pokemon_id(self, pokemon_id: int) -> list[Trainer]:
         return self.db.get_trainers_by_pokemon_id(pokemon_id)

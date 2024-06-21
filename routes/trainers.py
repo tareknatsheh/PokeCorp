@@ -8,7 +8,7 @@ db = create_database()
 
 @router.get("/", status_code=status.HTTP_200_OK)
 @handle_route_errors
-def get_trainers_by_pokemon_id(pokemon_id: int):
+def get_trainers_by_pokemon_id(pokemon_id: int | None = None):
     """Get trainers by pokemon they have
     Params:
         pokemon_id: int
@@ -18,8 +18,9 @@ def get_trainers_by_pokemon_id(pokemon_id: int):
     """
     result: list[Trainer] = []
     if not pokemon_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Please provide a pokemon id")
-    result = db.trainer.get_by_pokemon_id(pokemon_id)
+        result = db.trainer.get_all()
+    else:
+        result = db.trainer.get_by_pokemon_id(pokemon_id)
 
     if not result:
         raise HTTPException(status_code=404, detail=f"Couldn't find any trainer")

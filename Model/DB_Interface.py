@@ -25,6 +25,10 @@ class DB_Interface(ABC):
 
     #-------- Trainer --------
     @abstractmethod
+    def get_all_trainers() -> list[Trainer]:
+        pass
+    
+    @abstractmethod
     def is_trainer_has_pokemon(self, trainer_id, pokemon_id) -> bool:
         pass
 
