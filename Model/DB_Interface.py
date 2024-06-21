@@ -11,20 +11,8 @@ class DB_Interface(ABC):
     def _after(self):
         pass
     #-------- Pokemon --------
-    # @abstractmethod
-    # def get_all_pokemons(self) -> list[Pokemon]:
-    #     pass
-
     @abstractmethod
-    def add_new_pokemon(self, new_pokemon: Pokemon) -> Pokemon:
-        pass
-
-    @abstractmethod
-    def get_pokemon_by_id(self, id: int) -> Pokemon:
-        pass
-
-    @abstractmethod
-    def get_pokemons_by_trainer_id(self, id: int) -> list[dict]:
+    def add_new_pokemon(self, pokemon_id: int) -> dict:
         pass
 
     @abstractmethod
@@ -32,31 +20,31 @@ class DB_Interface(ABC):
         pass
 
     @abstractmethod
-    def get_pokemons_by_type_and_trainer_id(self, type: str, trainer_id: int) -> list[dict]:
+    def get_pokemons_by_trainer_id(self, id: int) -> list[dict]:
         pass
 
     #-------- Trainer --------
     @abstractmethod
+    def get_all_trainers() -> list[Trainer]:
+        pass
+    
+    @abstractmethod
+    def is_trainer_has_pokemon(self, trainer_id, pokemon_id) -> bool:
+        pass
+
+    @abstractmethod
     def get_trainers_by_pokemon_id(self, pokemon_id: int) -> list[Trainer]:
         pass
-    
-    @abstractmethod
-    def get_all_trainers(self) -> list[Trainer]:
-        pass
-    
-    @abstractmethod
-    def add_new_pokemon_to_trainer(self, trainer_id: int, new_pokemon: Pokemon) -> Optional[Pokemon]:
-        pass
 
     @abstractmethod
-    def get_trainer_by_id(self, trainer_id: int) -> Optional[Trainer]:
+    def delete_pokemon_of_trainer(self, trainer_id: int, pokemon_id: int) -> dict:
         pass
-
+    
     @abstractmethod
-    def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id: int) -> bool:
+    def add_new_pokemon_to_trainer(self, trainer_id: int, pokemon_id: int) -> dict:
         pass
 
     #-------- Actions --------
     @abstractmethod
-    def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> Pokemon:
+    def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> dict:
         pass

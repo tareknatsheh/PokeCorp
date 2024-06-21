@@ -61,3 +61,9 @@ class Testing_repo(DB_Interface):
     
     def evolve_pokemon_of_trainer(self, pokemon_id: int, trainer_id: int) -> Pokemon:
         return Pokemon(id=0, name="test", height=0, weight=0, type=[])
+    
+    def delete_pokemon_of_trainer(self, trainer_id: int, pokemon_id: int) -> dict:
+        self.pokemons_db = [pok for pok in self.pokemons_db if pok["id"] != pokemon_id]
+        return {
+            "message": f"pokemon with id {pokemon_id} has been removed"
+        }

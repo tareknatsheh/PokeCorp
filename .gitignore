@@ -1,5 +1,6 @@
 testing.py
 playground/
+db_interfaces_archive/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

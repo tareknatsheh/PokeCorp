@@ -1,13 +1,29 @@
 import os
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from routes import pokemons, trainers, evolve, home
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory=os.path.join("public", "static")), name="static")
 
-app.mount("/public", StaticFiles(directory="public"), name="public")
+# Add CORS Middleware
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8001",
+    "http://localhost:8002"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(home.router, prefix="", tags=["Home"])
 app.include_router(pokemons.router, prefix="/pokemons", tags=["Pokemons endpoint"])

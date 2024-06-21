@@ -9,7 +9,7 @@ db = create_database()
 
 @router.put("/{pokemon_id}/{trainer_id}", status_code=status.HTTP_200_OK)
 @handle_route_errors
-def get_pokemon(pokemon_id: int, trainer_id: int):
+def evolve_pokemon(pokemon_id: int, trainer_id: int):
     """Evolve (pokemon x of trainer y)
     Path:
         pokemon_id: int
@@ -28,13 +28,17 @@ def get_pokemon(pokemon_id: int, trainer_id: int):
     print(f"Next pok: {next_pok_name}, id: {next_pok_id}")
     print(f"type of the id is: {type(next_pok_id)}")
 
+
     if not next_pok_id or not next_pok_name:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Pokemon with id {pokemon_id} can not evolve further.")
     
-    # update the database
-    db.actions.evolve_pokemon_of_trainer(trainer_id, pokemon_id, next_pok_id)
+    # Second, let's check if trainer already has the evolved version
+    does_trainer_has_new_pokemon: bool = db.trainer.is_have_pokemon(trainer_id, next_pok_id)
 
-    return {
-        "name": next_pok_name,
-        "id": next_pok_id
-    }
+    if does_trainer_has_new_pokemon:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, f"Trainer with id {trainer_id} already has the evolved version of {pokemon_id}")
+    
+    # update the database
+    ev_result = db.actions.evolve_pokemon_of_trainer(trainer_id, pokemon_id, next_pok_id)
+
+    return ev_result
