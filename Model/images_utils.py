@@ -2,12 +2,12 @@ import base64
 from fastapi import HTTPException, UploadFile
 import requests
 
-async def update_image_of_pokemon_by_id(file: UploadFile, url: str, pokemon_id: int):
+async def update_image_of_pokemon_by_id(file: UploadFile, url: str, pokemon_id: int) -> dict:
     if file.content_type not in ["image/jpeg", "image/png", "image/gif"]:
         raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, and GIF are allowed.")
     
     image_data = await file.read()
-    encoded_string = base64.b64encode(image_data)
+    encoded_string = base64.b64encode(image_data).decode("utf-8")
 
     # send data to mongodb-imgs-microservice
     print(f"passing data to {url}")

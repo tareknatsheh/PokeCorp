@@ -1,6 +1,5 @@
 import os
 from fastapi import FastAPI
-from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from routes import pokemons, trainers, evolve, home

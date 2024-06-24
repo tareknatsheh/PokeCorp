@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException, status
 from Model.db import create_database
 from routes.utils.routes_error_handler import handle_route_errors
@@ -8,7 +9,7 @@ db = create_database()
 
 @router.get("/", status_code=status.HTTP_200_OK)
 @handle_route_errors
-def get_trainers_by_pokemon_id(pokemon_id: int | None = None):
+def get_trainers_by_pokemon_id(pokemon_id: Optional[int] = None):
     """Get trainers by pokemon they have
     Params:
         pokemon_id: int

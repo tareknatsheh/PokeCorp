@@ -4,7 +4,7 @@ sys.path.append('D:/backend-bootcamp/Final project/PokeCorp')  # Adjust the path
 
 
 from decouple import config, UndefinedValueError
-from Model.Entities import Pokemon, Trainer
+from Model.Entities import Trainer
 from Model.DB_Interface import DB_Interface
 import requests as req
 
