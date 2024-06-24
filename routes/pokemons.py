@@ -56,7 +56,7 @@ async def upload_image(pokemon_id: int, file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, and GIF are allowed.")
         
         image_data = await file.read()
-        encoded_string = base64.b64encode(image_data)
+        encoded_string = base64.b64encode(image_data).decode("utf-8")
         # send data to mongodb-imgs-microservice
         url = str(config("IMAGES_MICROSERVICE_URI"))
         print(f"passing data to {url}")
