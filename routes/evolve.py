@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
 from Model.db import create_database
-from Model.Entities import Pokemon
 from routes.utils.evolve_helper import evolve
 from routes.utils.routes_error_handler import handle_route_errors
 

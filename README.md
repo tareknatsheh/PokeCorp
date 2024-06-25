@@ -4,6 +4,9 @@
 Check out a working demo [here](https://pokecorp-3a23066915f4.herokuapp.com/)
 
 
+## Block Diagram
+![arch block diagram](./pokecorp_diagram.jpg)
+
 ## Quick Start
 Install all requirements
 ```bash
