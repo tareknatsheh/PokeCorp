@@ -1,6 +1,7 @@
 testing.py
 playground/
 db_interfaces_archive/
+frontend_local/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -18,9 +18,9 @@ class Pokemon_Repo:
     def get_by_type(self, type: str) -> list[dict]:
         return self.db.get_pokemons_by_type(type)
     
-    async def update_image(self, pokemon_id: int ,file: UploadFile):
+    async def update_image(self, pokemon_id: int ,file: UploadFile) -> dict:
         url = str(config("IMAGES_MICROSERVICE_URI"))
-        return update_image_of_pokemon_by_id(file, url, pokemon_id)
+        return await update_image_of_pokemon_by_id(file, url, pokemon_id)
 
     
     def get_pokemon_image_by_id(self, pokemon_id: int) -> requests.Response:
