@@ -1,7 +1,7 @@
 # Pokemon Corp API
 
 ## Demo
-Check out a working demo [here](https://pokecorp-gateway-73dd8185d4ab.herokuapp.com//)
+Check out a working demo [here](https://pokecorp-gateway-73dd8185d4ab.herokuapp.com/)
 
 ## Pokemon data Microservice repo:
 https://github.com/tareknatsheh/PokeCorp-DB-microservice
