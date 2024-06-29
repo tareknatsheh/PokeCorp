@@ -5,7 +5,6 @@ from Model.Entities import Trainer
 from Model.DB_Interface import DB_Interface
 from decouple import config
 from Model.images_utils import update_image_of_pokemon_by_id, get_pok_img_by_id
-from db_interfaces_archive.sql_queries.pokemon_queries import GET_BY_TYPE_AND_TRAINER_ID
 
 class Pokemon_Repo:
     def __init__(self, db: DB_Interface):
