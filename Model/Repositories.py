@@ -1,9 +1,11 @@
+from typing import Optional
 from fastapi import UploadFile
 import requests
 from Model.Entities import Trainer
 from Model.DB_Interface import DB_Interface
 from decouple import config
 from Model.images_utils import update_image_of_pokemon_by_id, get_pok_img_by_id
+from db_interfaces_archive.sql_queries.pokemon_queries import GET_BY_TYPE_AND_TRAINER_ID
 
 class Pokemon_Repo:
     def __init__(self, db: DB_Interface):
@@ -12,11 +14,11 @@ class Pokemon_Repo:
     def add(self, pokemon_id: int) -> dict:
         return self.db.add_new_pokemon(pokemon_id)
     
-    def get_by_trainer_id(self, trainer_id: int) -> list[dict]:
-        return self.db.get_pokemons_by_trainer_id(trainer_id)
+    # def get_by_trainer_id(self, trainer_id: int) -> list[dict]:
+    #     return self.db.get_pokemons_by_trainer_id(trainer_id)
     
-    def get_by_type(self, type: str) -> list[dict]:
-        return self.db.get_pokemons_by_type(type)
+    # def get_by_type(self, type: str) -> list[dict]:
+    #     return self.db.get_pokemons_by_type(type)
     
     async def update_image(self, pokemon_id: int ,file: UploadFile) -> dict:
         url = str(config("IMAGES_MICROSERVICE_URI"))
@@ -26,6 +28,9 @@ class Pokemon_Repo:
     def get_pokemon_image_by_id(self, pokemon_id: int) -> requests.Response:
         url = str(config("IMAGES_MICROSERVICE_URI"))
         return get_pok_img_by_id(url, pokemon_id)
+    
+    def get_by_type_and_trainer_id(self, type: Optional[str], trainer_id: Optional[int]):
+        return self.db.get_pokemons_by_type_and_trainer_id(type, trainer_id)
     
 
 class Trainer_Repo:

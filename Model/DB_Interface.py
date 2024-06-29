@@ -16,11 +16,7 @@ class DB_Interface(ABC):
         pass
 
     @abstractmethod
-    def get_pokemons_by_type(self, type: str) -> list[dict]:
-        pass
-
-    @abstractmethod
-    def get_pokemons_by_trainer_id(self, id: int) -> list[dict]:
+    def get_pokemons_by_type_and_trainer_id(sekf, type: Optional[str], trainer_id: Optional[int]):
         pass
 
     #-------- Trainer --------

@@ -20,18 +20,11 @@ def get_pokemon(type: Optional[str] = None, trainer_id: Optional[int] = None):
     Returns:
         json: pokemon details
     """
-    result = None
-    if not type:
-        if not trainer_id:
-            raise HTTPException(status_code=400, detail=f"There are too many pokemons, please specify a type and/or a trainer")
-        else:
-            result = db.pokemon.get_by_trainer_id(trainer_id)
-    else:
-        result = db.pokemon.get_by_type(type)
+    result = db.pokemon.get_by_type_and_trainer_id(type, trainer_id)
 
     if not result:
         raise HTTPException(status_code=404, detail=f"Couldn't find any pokemon")
-
+    
     return result
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

@@ -1,4 +1,5 @@
 import sys
+from typing import Optional
 from fastapi import HTTPException, status
 sys.path.append('D:/backend-bootcamp/Final project/PokeCorp')  # Adjust the path as necessary
 
@@ -19,17 +20,8 @@ class MySql_API_repo(DB_Interface):
             print("Please set an env variable called MYSQL_MICROSERVICE_URI for the MySQL API endpoint")
             raise e
         
-
-    def get_pokemons_by_type(self, type: str) -> list[dict]:
-        res = req.get(f"{self.pokemons_enpoint}", params={"type": type})
-        try:
-            res.raise_for_status()
-        except req.exceptions.HTTPError as http_err:
-            raise HTTPException(status_code=res.status_code, detail=res.json()["detail"]) from http_err
-        return res.json()
-    
-    def get_pokemons_by_trainer_id(self, id: int) -> list[dict]:
-        res = req.get(f"{self.pokemons_enpoint}", params={"trainer_id": id})
+    def get_pokemons_by_type_and_trainer_id(self, type: Optional[str], trainer_id: Optional[int]) -> list[dict]:
+        res = req.get(f"{self.pokemons_enpoint}", params={"trainer_id": trainer_id, "type": type})
         try:
             res.raise_for_status()
         except req.exceptions.HTTPError as http_err:
@@ -101,7 +93,7 @@ class MySql_API_repo(DB_Interface):
     
 
     def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id) -> bool:
-        res  = self.get_pokemons_by_trainer_id(trainer_id)
+        res  = self.get_pokemons_by_type_and_trainer_id(None, trainer_id)
         for pok in res:
             if pok["id"] == pokemon_id:
                 return True
@@ -139,7 +131,7 @@ class MySql_API_repo(DB_Interface):
 if __name__ == "__main__":
     # Sanity checking the DB repo
     mysql = MySql_API_repo()
-    res = mysql.get_pokemons_by_type("abbas")
+    res = mysql.get_pokemons_by_type_and_trainer_id("fire", 2)
     print(res)
     # a_pok = mysql.get_pokemon_by_id(34)
     # print(a_pok)
