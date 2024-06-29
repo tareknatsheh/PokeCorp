@@ -42,7 +42,6 @@ def add_new_pokemon(pokemon_id: int):
 
 
 @router.post("/images")
-@handle_route_errors
 async def upload_image(pokemon_id: int, file: UploadFile = File(...)):
     if file.content_type not in ["image/jpeg", "image/png", "image/gif"]:
         raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, and GIF are allowed.")

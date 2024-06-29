@@ -93,7 +93,7 @@ class MySql_API_repo(DB_Interface):
     
 
     def is_trainer_has_pokemon(self, trainer_id: int, pokemon_id) -> bool:
-        res  = self.get_pokemons_by_type_and_trainer_id(None, trainer_id)
+        res  = self.get_pokemons_by_type_and_trainer_id("all", trainer_id)
         for pok in res:
             if pok["id"] == pokemon_id:
                 return True
@@ -102,6 +102,7 @@ class MySql_API_repo(DB_Interface):
     
     def evolve_pokemon_of_trainer(self, trainer_id: int, old_pokemon_id: int, new_pokemon_id: int) -> dict:
         remove_result =  self.delete_pokemon_of_trainer(trainer_id, old_pokemon_id)
+        
         if not "affected_rows" in remove_result:
             raise Exception("The pokemons db api did not return the expected result that has 'affected_rows' kvp")
         if remove_result["affected_rows"] <= 0:
@@ -113,12 +114,14 @@ class MySql_API_repo(DB_Interface):
         }
 
     def delete_pokemon_of_trainer(self, trainer_id: int, pokemon_id: int) -> dict:
+        print(f"deleting pokemon with id {pokemon_id}")
         res = req.delete(f"{self.trainers_enpoint}/{trainer_id}/{pokemon_id}")
         try:
             res.raise_for_status()
         except req.exceptions.HTTPError as http_err:
             raise HTTPException(status_code=res.status_code, detail=res.json()["detail"]) from http_err
         res = res.json()
+        print(f"DONE deleting pokemon with id {pokemon_id}")
         return res
 
     def _before(self):
