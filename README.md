@@ -12,6 +12,10 @@ https://github.com/tareknatsheh/PokeCorp-images-microservice
 ## Block Diagram
 ![arch block diagram](./pokecorp_diagram.jpg)
 
+## Use case
+Here is a sequence diagram of an example of adding a new pokemon to the database
+![adding a pokemon use case](./add_pok_yanma.jpg)
+
 ## Quick Start
 Install all requirements
 ```bash
@@ -29,3 +33,15 @@ You can run the available tests by executing this command:
 ```bash
 python -m pytest
 ```
+
+### TODO
+- Add in memory caching or Redis and client caching
+- Add authentication and authorization endpoints
+- Add better logging, and explore tools like Grafana
+- Research other options for storing images
+
+## Ideas for scalability
+- A message broker like KAFKA
+- Load balancing across all microservices
+- Auto scaling by cloud services providers
+- CDN like cloudfront for the images

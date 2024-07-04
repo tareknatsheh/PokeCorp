@@ -40,4 +40,9 @@ def evolve_pokemon(pokemon_id: int, trainer_id: int):
     # update the database
     ev_result = db.actions.evolve_pokemon_of_trainer(trainer_id, pokemon_id, next_pok_id)
 
+    # TODO
+    # make sure that we have the image of the new pokemon in our images database
+    # url = str(config("IMAGES_MICROSERVICE_URI"))
+    # response = requests.get(f"{url}/{pokemon_id}")
+
     return ev_result
